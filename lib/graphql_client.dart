@@ -3,6 +3,9 @@ import 'package:graphql_flutter/graphql_flutter.dart';
 
 import 'app_config.dart';
 
+final client = GraphQLApiClient(
+    AppConfig(baseUrl: "https://api.ana-hunter.dev/v1/graphql"));
+
 class GraphQLApiClient {
   GraphQLApiClient(AppConfig config)
       : graphQLClient = ValueNotifier<GraphQLClient>(
