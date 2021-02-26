@@ -31,8 +31,13 @@ dependencies:
   hooks_riverpod:
   flutter_hooks:
   webview_flutter:
+  graphql_flutter:
+  json_annotation:
+  intl:
 
 dev_dependencies:
+  build_runner:
+  json_serializable:
   flutter_test:
     sdk: flutter
 
