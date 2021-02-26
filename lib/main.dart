@@ -1,4 +1,5 @@
 import 'package:ana_hunter_flutter/blog.dart';
+import 'package:ana_hunter_flutter/graphql_client.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -11,27 +12,9 @@ void main() async {
   // so we need to initialize Hive.
   await initHiveForFlutter();
 
-  final HttpLink httpLink = HttpLink(
-    'https://api.ana-hunter.dev/v1/graphql',
-  );
-
-  // final AuthLink authLink = AuthLink(
-  //   getToken: () async => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  //   // OR
-  //   // getToken: () => 'Bearer <YOUR_PERSONAL_ACCESS_TOKEN>',
-  // );
-
-  // final Link link = authLink.concat(httpLink);
-
-  ValueNotifier<GraphQLClient> client = ValueNotifier(
-    GraphQLClient(
-      link: httpLink,
-      // The default store is the InMemoryStore, which does NOT persist to disk
-      cache: GraphQLCache(store: HiveStore()),
-    ),
-  );
   runApp(ProviderScope(
-      child: GraphQLProvider(client: client, child: AnaHunterApp())));
+      child: GraphQLProvider(
+          client: client.graphQLClient, child: AnaHunterApp())));
 }
 
 class AnaHunterApp extends StatelessWidget {

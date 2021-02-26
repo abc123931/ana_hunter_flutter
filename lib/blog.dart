@@ -1,25 +1,9 @@
-import 'package:ana_hunter_flutter/models/blog_model.dart';
+import 'package:ana_hunter_flutter/providers/get_blogs_provider.dart';
 import 'package:ana_hunter_flutter/webview.dart';
 import 'package:flutter/material.dart';
-import 'package:graphql_flutter/graphql_flutter.dart';
+import 'package:flutter_hooks/flutter_hooks.dart';
+import 'package:hooks_riverpod/hooks_riverpod.dart';
 import 'package:intl/intl.dart';
-
-import 'models/get_blogs_response.dart';
-import 'models/blog_model.dart';
-
-String getBlogsDocument = """
-  query GetBlogs {
-    blogs(order_by: { updatedAt: desc }) {
-      author
-      id
-      image
-      summary
-      title
-      url
-      updatedAt
-    }
-  }
-""";
 
 class BlogPage extends StatelessWidget {
   const BlogPage({Key key}) : super(key: key);
@@ -30,33 +14,23 @@ class BlogPage extends StatelessWidget {
       appBar: AppBar(
         title: Text('ブログ'),
       ),
-      body: Query(
-        options: QueryOptions(
-          document: gql(
-              getBlogsDocument), // this is the query string you just created
-        ),
-        builder: (QueryResult result,
-            {VoidCallback refetch, FetchMore fetchMore}) {
-          if (result.isLoading) {
-            return Text('Loading');
-          }
-          return BlogList(blogs: GetBlogsResponse.fromJson(result.data).blogs);
-        },
-      ),
+      body: BlogList(),
       backgroundColor: Colors.grey[100],
     );
   }
 }
 
-class BlogList extends StatelessWidget {
-  BlogList({Key key, @required this.blogs}) : super(key: key);
-  final List<Blog> blogs;
-
+class BlogList extends HookWidget {
   @override
   Widget build(BuildContext context) {
+    final controller = useProvider(getBlogsProvider);
+
+    if (controller.error != null) return Text("えらーだよ");
+    if (controller.loading) return Text("...loading");
+
     return ListView.builder(
       padding: const EdgeInsets.all(8),
-      itemCount: blogs.length,
+      itemCount: controller.blogs.length,
       itemBuilder: (BuildContext context, int index) {
         return Card(
           child: Container(
@@ -66,11 +40,11 @@ class BlogList extends StatelessWidget {
               children: [
                 Text(
                     "最終更新日: " +
-                        DateFormat('M月d日')
-                            .format(DateTime.parse(blogs[index].updatedAt)),
+                        DateFormat('M月d日').format(
+                            DateTime.parse(controller.blogs[index].updatedAt)),
                     style: TextStyle(color: Colors.grey)),
                 Text(
-                  blogs[index].title,
+                  controller.blogs[index].title,
                   style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
                 ),
                 FlatButton(
@@ -84,8 +58,8 @@ class BlogList extends StatelessWidget {
                       MaterialPageRoute(
                         builder: (context) {
                           return WebViewPage(
-                            title: blogs[index].title,
-                            url: blogs[index].url,
+                            title: controller.blogs[index].title,
+                            url: controller.blogs[index].url,
                           );
                         },
                       ),
