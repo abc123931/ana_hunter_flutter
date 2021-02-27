@@ -1,5 +1,6 @@
 import 'package:ana_hunter_flutter/blog.dart';
 import 'package:ana_hunter_flutter/graphql_client.dart';
+import 'package:ana_hunter_flutter/home_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_hooks/flutter_hooks.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
@@ -48,9 +49,7 @@ final navigationPageProvider =
 
 class App extends HookWidget {
   static const List<Widget> _pages = <Widget>[
-    Text(
-      'ホーム画面',
-    ),
+    HomePage(),
     BlogPage(),
     Text(
       '競走馬検索',
