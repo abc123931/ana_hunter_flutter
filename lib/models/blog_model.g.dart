@@ -6,15 +6,15 @@ part of 'blog_model.dart';
 // JsonSerializableGenerator
 // **************************************************************************
 
-Blog _$BlogFromJson(Map<String, dynamic> json) {
-  return Blog(
-    json['title'] as String,
-    json['url'] as String,
-    json['updatedAt'] as String,
+_$_Blog _$_$_BlogFromJson(Map<String, dynamic> json) {
+  return _$_Blog(
+    title: json['title'] as String,
+    url: json['url'] as String,
+    updatedAt: json['updatedAt'] as String,
   );
 }
 
-Map<String, dynamic> _$BlogToJson(Blog instance) => <String, dynamic>{
+Map<String, dynamic> _$_$_BlogToJson(_$_Blog instance) => <String, dynamic>{
       'title': instance.title,
       'url': instance.url,
       'updatedAt': instance.updatedAt,
