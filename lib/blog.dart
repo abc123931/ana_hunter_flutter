@@ -23,54 +23,58 @@ class BlogPage extends StatelessWidget {
 class BlogList extends HookWidget {
   @override
   Widget build(BuildContext context) {
-    final controller = useProvider(getBlogsProvider);
+    final config = useProvider(getBlogsProvider);
 
-    if (controller.error != null) return Text("えらーだよ");
-    if (controller.loading) return Text("...loading");
-
-    return ListView.builder(
-      padding: const EdgeInsets.all(8),
-      itemCount: controller.blogs.length,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          child: Container(
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Text(
-                    "最終更新日: " +
-                        DateFormat('M月d日').format(
-                            DateTime.parse(controller.blogs[index].updatedAt)),
-                    style: TextStyle(color: Colors.grey)),
-                Text(
-                  controller.blogs[index].title,
-                  style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
-                ),
-                FlatButton(
-                  child: const Text(
-                    "ブログを見る",
-                    textAlign: TextAlign.left,
-                  ),
-                  textColor: Colors.green,
-                  onPressed: () {
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) {
-                          return WebViewPage(
-                            title: controller.blogs[index].title,
-                            url: controller.blogs[index].url,
-                          );
-                        },
+    return config.when(
+      loading: () => Text("...loading"),
+      error: (err, stack) => Text("エラーだよ"),
+      data: (blogs) {
+        return ListView.builder(
+          padding: const EdgeInsets.all(8),
+          itemCount: blogs.length,
+          itemBuilder: (BuildContext context, int index) {
+            return Card(
+              child: Container(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  children: [
+                    Text(
+                        "最終更新日: " +
+                            DateFormat('M月d日')
+                                .format(DateTime.parse(blogs[index].updatedAt)),
+                        style: TextStyle(color: Colors.grey)),
+                    Text(
+                      blogs[index].title,
+                      style:
+                          TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                    ),
+                    FlatButton(
+                      child: const Text(
+                        "ブログを見る",
+                        textAlign: TextAlign.left,
                       ),
-                    );
-                  },
-                  padding: EdgeInsets.all(0),
+                      textColor: Colors.green,
+                      onPressed: () {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) {
+                              return WebViewPage(
+                                title: blogs[index].title,
+                                url: blogs[index].url,
+                              );
+                            },
+                          ),
+                        );
+                      },
+                      padding: EdgeInsets.all(0),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-            padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
-          ),
+                padding: EdgeInsets.symmetric(vertical: 24, horizontal: 16),
+              ),
+            );
+          },
         );
       },
     );
