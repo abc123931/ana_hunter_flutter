@@ -34,9 +34,11 @@ dependencies:
   graphql_flutter:
   json_annotation:
   intl:
+  freezed_annotation:
 
 dev_dependencies:
   build_runner:
+  freezed:
   json_serializable:
   flutter_test:
     sdk: flutter
